@@ -252,7 +252,6 @@ class GGScreenshot(ModuleBase):
             logger.info('Push success')
 
     def gg_open(self):
-        logger.info('GG open')
         skip_first_screenshot = True
         count = 0
         while 1:
@@ -278,10 +277,6 @@ class GGScreenshot(ModuleBase):
                 self.device.click(GG_START)
                 count += 3
                 continue
-            if self.appear(GG_START, offset=(20, 20)):
-                logger.info('GG appear start')
-            if GG_START.match_appear_on(self.device.image):
-                logger.info('GG match appear start')
             if self.get_interval_timer(IDLE, interval=3).reached():
                 if IDLE.match_luma(self.device.image, offset=(5, 5)):
                     logger.info(f'UI additional: {IDLE} -> {REWARD_GOTO_MAIN}')

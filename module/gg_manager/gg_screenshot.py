@@ -83,6 +83,10 @@ class GGScreenshot(ModuleBase):
                 logger.info('Select APP')
                 self.device.click(GG_APP_RECHOOSE)
                 continue
+            if self.appear(GG_APP_ENTER, offset=(20, 20)):
+                logger.info('APP Enter appeared')
+            else:
+                logger.info('APP Enter not appeared')
             if self.appear(GG_NOTRUN, offset=(20, 20)):
                 self.gg_restart()
                 self.device.sleep(0.5)

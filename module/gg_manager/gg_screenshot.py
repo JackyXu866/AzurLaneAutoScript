@@ -70,6 +70,13 @@ class GGScreenshot(ModuleBase):
                     self.device.click(GG_APP_CHOOSE1)
                 logger.info('APP Choose')
                 continue
+            elif self.appear(GG_APP_CHOOSE1_1, offset=(20, 20)):
+                if self.appear_then_click(GG_APP_CHOOSE0_1, offset=(20, 20), interval=1):
+                    pass
+                else:
+                    self.device.click(GG_APP_CHOOSE1_1)
+                logger.info('APP Choose')
+                continue
             if not self.appear(GG_APP_ENTER, offset=(20, 20)) and \
                 self.appear(GG_SEARCH_MODE_CONFIRM, offset=(10, 10)) and \
                     GG_SEARCH_MODE_CONFIRM.match_template_color(self.device.image):

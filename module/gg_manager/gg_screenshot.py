@@ -70,7 +70,7 @@ class GGScreenshot(ModuleBase):
                     self.device.click(GG_APP_CHOOSE1)
                 logger.info('APP Choose')
                 continue
-            elif self.appear(GG_APP_CHOOSE1_1, offset=(20, 20)):
+            if self.appear(GG_APP_CHOOSE1_1, offset=(20, 20)):
                 if self.appear_then_click(GG_APP_CHOOSE0_1, offset=(20, 20), interval=1):
                     pass
                 else:

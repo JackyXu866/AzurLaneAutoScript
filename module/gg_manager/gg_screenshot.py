@@ -46,13 +46,11 @@ class GGScreenshot(ModuleBase):
         if not isinstance(result, list):
             result = [result]
         for i in range(len(result)):
-            logger.info(f'App {i} found: {result[i]}')
             if result[i].find('GB') != -1:
                 self.device.click(LIST_OCR_PROCESSES[i])
                 logger.info(f'App {i} selected')
                 return True
         
-        logger.warning('No app found')
         return False
 
     def _enter_gg(self):
@@ -96,14 +94,13 @@ class GGScreenshot(ModuleBase):
             #         self.device.click(GG_APP_CHOOSE1)
             #     logger.info('APP Choose')
             #     continue
-            self.app_choose_then_click()
-            
             if not self.appear(GG_APP_ENTER, offset=(20, 20)) and \
                 self.appear(GG_SEARCH_MODE_CONFIRM, offset=(10, 10)) and \
                     GG_SEARCH_MODE_CONFIRM.match_template_color(self.device.image):
                 logger.info('Select APP')
                 self.device.click(GG_APP_RECHOOSE)
                 continue
+            self.app_choose_then_click()
             # if self.appear(GG_APP_ENTER, offset=(20, 20)):
             #     logger.info('APP Enter appeared')
             # else:
@@ -141,7 +138,7 @@ class GGScreenshot(ModuleBase):
             #         self.device.click(GG_APP_CHOOSE1)
             #     logger.info('APP Choose')
             #     continue
-            self.app_choose_then_click()
+            # self.app_choose_then_click()
 
             if self.appear(GG_SEARCH_MODE_CONFIRM, offset=(10, 10)) and \
                 GG_SEARCH_MODE_CONFIRM.match_template_color(self.device.image):

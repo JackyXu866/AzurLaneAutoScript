@@ -83,17 +83,24 @@ class Combat(Level, HPBalancer, Retirement, SubmarineCall, CombatAuto, CombatMan
         """
         self.device.stuck_record_add(PAUSE)
         if self.config.SERVER in ['cn', 'en']:
-            if PAUSE.match_luma(self.device.image, offset=(20, 20)):
+            if PAUSE.match_luma(self.device.image, offset=(10, 10)):
                 return PAUSE
         else:
             color = get_color(self.device.image, PAUSE.area)
             if color_similar(color, PAUSE.color) or color_similar(color, (238, 244, 248)):
                 if np.max(self.image_crop(PAUSE_DOUBLE_CHECK, copy=False)) < 153:
                     return PAUSE
-        if PAUSE_New.match_luma(self.device.image, offset=(20, 20)):
+        if PAUSE_New.match_template_color(self.device.image, offset=(10, 10)):
             return PAUSE_New
-        if PAUSE_Iridescent_Fantasy.match_luma(self.device.image, offset=(20, 20)):
+        if PAUSE_Iridescent_Fantasy.match_luma(self.device.image, offset=(10, 10)):
             return PAUSE_Iridescent_Fantasy
+        if PAUSE_Christmas.match_luma(self.device.image, offset=(10, 10)):
+            return PAUSE_Christmas
+        # PAUSE_New, PAUSE_Cyber, PAUSE_Neon look similar, check colors
+        if PAUSE_Neon.match_template_color(self.device.image, offset=(10, 10)):
+            return PAUSE_Neon
+        if PAUSE_Cyber.match_template_color(self.device.image, offset=(10, 10)):
+            return PAUSE_Cyber
         return False
 
     def handle_combat_quit(self, offset=(20, 20), interval=3):
@@ -110,6 +117,12 @@ class Combat(Level, HPBalancer, Retirement, SubmarineCall, CombatAuto, CombatMan
             return True
         if QUIT_Iridescent_Fantasy.match_luma(self.device.image, offset=offset):
             self.device.click(QUIT_Iridescent_Fantasy)
+            timer.reset()
+            return True
+        # Battle UI PAUSE_Neon uses QUIT_New
+        # Battle UI PAUSE_Cyber uses QUIT_New
+        if QUIT_Christmas.match_luma(self.device.image, offset=offset):
+            self.device.click(QUIT_Christmas)
             timer.reset()
             return True
         return False
@@ -170,7 +183,9 @@ class Combat(Level, HPBalancer, Retirement, SubmarineCall, CombatAuto, CombatMan
                     interval_set = True
 
             # End
-            if self.is_combat_executing():
+            pause = self.is_combat_executing()
+            if pause:
+                logger.attr('BattleUI', pause)
                 if emotion_reduce:
                     self.emotion.reduce(fleet_index)
                 break
@@ -222,7 +237,7 @@ class Combat(Level, HPBalancer, Retirement, SubmarineCall, CombatAuto, CombatMan
         if not self.config.HpControl_UseEmergencyRepair:
             return False
 
-        if self.appear_then_click(EMERGENCY_REPAIR_CONFIRM, offset=True):
+        if self.appear_then_click(EMERGENCY_REPAIR_CONFIRM, offset=True, interval=3):
             return True
         if self.appear(BATTLE_PREPARATION, offset=(20, 20)) and self.appear(EMERGENCY_REPAIR_AVAILABLE):
             # When entering battle_preparation page (or after emergency repairing),
@@ -236,16 +251,22 @@ class Combat(Level, HPBalancer, Retirement, SubmarineCall, CombatAuto, CombatMan
             self.wait_until_stable(stable_checker)
             if not self.appear(EMERGENCY_REPAIR_AVAILABLE):
                 return False
+
             logger.info('EMERGENCY_REPAIR_AVAILABLE')
             if not len(self.hp):
                 return False
+            if max(self.hp[:3]) <= 0.001 or max(self.hp[3:]) <= 0.001:
+                logger.warning(f'Invalid HP to use emergency repair: {self.hp}')
+                return False
+
             hp = np.array(self.hp)
             hp = hp[hp > 0.001]
             if (len(hp) and np.min(hp) < self.config.HpControl_RepairUseSingleThreshold) \
-                    or np.max(self.hp[:3]) < self.config.HpControl_RepairUseMultiThreshold \
-                    or np.max(self.hp[3:]) < self.config.HpControl_RepairUseMultiThreshold:
+                    or max(self.hp[:3]) < self.config.HpControl_RepairUseMultiThreshold \
+                    or max(self.hp[3:]) < self.config.HpControl_RepairUseMultiThreshold:
                 logger.info('Use emergency repair')
                 self.device.click(EMERGENCY_REPAIR_AVAILABLE)
+                self.interval_clear(EMERGENCY_REPAIR_CONFIRM)
                 return True
 
         return False

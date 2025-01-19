@@ -781,7 +781,7 @@
     },
     "Campaign": {
       "Name": "D3",
-      "Event": "war_archives_20211229_cn",
+      "Event": "war_archives_20220224_cn",
       "Mode": "normal",
       "UseClearMode": true,
       "UseFleetLock": true,
@@ -1481,6 +1481,22 @@
       "CollectExp": true,
       "CollectMission": true,
       "CollectWeeklyMission": true
+    },
+    "Storage": {
+      "Storage": {}
+    }
+  },
+  "Awaken": {
+    "Scheduler": {
+      "Enable": false,
+      "NextRun": "2020-01-01 00:00:00",
+      "Command": "Awaken",
+      "SuccessInterval": 0,
+      "FailureInterval": 120,
+      "ServerUpdate": "00:00"
+    },
+    "Awaken": {
+      "LevelCap": "level120"
     },
     "Storage": {
       "Storage": {}

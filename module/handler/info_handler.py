@@ -146,7 +146,7 @@ class InfoHandler(ModuleBase):
             POPUP_CANCEL_WHITE, POPUP_CONFIRM_WHITE,
         ])
 
-    _hot_fix_check_wait = Timer(6)
+    _hot_fix_check_wait = Timer(10)
 
     def handle_urgent_commission(self, drop=None):
         """

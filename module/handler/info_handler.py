@@ -172,7 +172,6 @@ class InfoHandler(ModuleBase):
         if self._hot_fix_check_wait.started() and 5 <= self._hot_fix_check_wait.current() <= 10:
             if not self.device.app_is_running():
                 logger.error('Detected hot fixes from game server, game died')
-                self._hot_fix_check_wait.clear()
                 raise GameNotRunningError
             # Use template match without color match due to maintenance popup
             if self.appear(LOGIN_CHECK, offset=(30, 30)):
@@ -180,7 +179,7 @@ class InfoHandler(ModuleBase):
                              'probably because account kicked by server maintenance or another log in')
                 # Kill game, because game patches after maintenance can only be downloaded at game startup
                 self.device.app_stop()
-                self._hot_fix_check_wait.clear()
+                self.device.app_start()
                 raise GameNotRunningError
             self._hot_fix_check_wait.clear()
 

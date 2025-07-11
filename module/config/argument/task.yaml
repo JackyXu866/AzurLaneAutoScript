@@ -284,6 +284,9 @@ DailyMission:
     DashboardUpdate:
       - Scheduler
       - DashboardUpdate
+    PrivateQuarters:
+      - Scheduler
+      - PrivateQuarters
 
 # ==================== Opsi ====================
 
